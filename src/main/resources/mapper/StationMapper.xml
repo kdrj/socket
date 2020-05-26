@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jouryu.socket.socket.mapper.StationMapper">
+
+    <resultMap id="stationMap" type="com.jouryu.socket.socket.model.Station">
+        <id column="ids" jdbcType="VARCHAR" property="id"/>
+        <result column="stationName" jdbcType="VARCHAR" property="name"/>
+        <result column="siteCode" jdbcType="VARCHAR" property="code"/>
+        <collection ofType="com.jouryu.socket.socket.model.Sensor" property="sensors">
+            <id column="id" jdbcType="VARCHAR" property="id"/>
+            <result column="stationId" jdbcType="VARCHAR" property="stationId"/>
+            <result column="sensorType" jdbcType="VARCHAR" property="type"/>
+            <result column="sensorName" jdbcType="VARCHAR" property="name"/>
+            <result column="sensorCode" jdbcType="VARCHAR" property="code"/>
+            <result column="register" jdbcType="VARCHAR" property="register"/>
+            <result column="upThreshold" jdbcType="DOUBLE" property="upThreshold"/>
+            <result column="lowThreshold" jdbcType="DOUBLE" property="lowThreshold"/>
+            <result column="resolution" jdbcType="INTEGER" property="resolution"/>
+        </collection>
+    </resultMap>
+    <select id="getStations" resultMap="stationMap">
+        select * ,b.ids as sensorId from base_station a left join base_sensor b on a.ids=b.stationids where status=1
+    </select>
+</mapper>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>websocket服务</title>
+</head>
+<body>
+<h1>websocket页面</h1>
+<p id="msg"></p>
+
+<input id="text" type="text"/>
+<input type="button" onclick="b()" value="发送"/>
+</body>
+<script>
+        var p=document.getElementById("msg")
+        var socket;
+        var url=location.href;
+        var site = url.lastIndexOf("\/");
+        //截取最后一个/后的值
+        var sid=url.substring(site + 1, url.length);
+        if(typeof (WebSocket)=="undefined"){
+            alert("你的浏览器不支持websocket")
+        }else {
+            console.log("你的浏览器支持websocket")
+
+            socket=new WebSocket("ws://127.0.0.1:8080/websocket/"+sid);
+            socket.onopen=function () {
+                console.log("socket已打开")
+            };
+            socket.onmessage=function (msg) {
+                p.innerText=msg.data
+            }
+            socket.onclose=function () {
+                console.log("socket已关闭")
+            }
+            socket.onerror=function () {
+                alert("socket发生了错误")
+            }
+    }
+    function b() {
+        var t=document.getElementById("text").value;
+        socket.send(t)
+    }
+</script>
+</html>
