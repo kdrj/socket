@@ -35,10 +35,10 @@ import java.util.List;
 public class SensorHandler {
     private final static Logger logger=LoggerFactory.getLogger(SensorHandler.class);
 
-    @Value("${hbaseprefix}")
+    @Value("${hbasePrefix}")
     private String hbasePrefix;
 
-    @Value("${kafkatopicPrefix}")
+    @Value("${kafkaTopicPrefix}")
     private String kafkaPrefix;
     @Autowired
     private HbaseService hbaseService;
@@ -50,7 +50,7 @@ public class SensorHandler {
         Channel channel=context.channel();
         String channelId=ReceiveSensorDataHandler.getChannelId(channel);
         long date=new Date().getTime();
-        logger.info(CatcheData.getStationNameByChannelId(channelId)+"传感器["+ReceiveSensorDataHandler.getRemoteAddress(channel)+"]"+"发来数据"+message);
+        logger.info(CatcheData.getStationNameByChannelId(channelId)+"传感器["+ReceiveSensorDataHandler.getRemoteAddress(channel)+"]"+"发来数据"+getValue(channelId,message));
         hbaseHandler(channelId,message,date);
         kafkaHandeler(channel,message,date);
     }
@@ -70,10 +70,11 @@ public class SensorHandler {
         put.addColumn(Bytes.toBytes("sensorInfo"),Bytes.toBytes("sensorType"),Bytes.toBytes(sensorCode));
         put.addColumn(Bytes.toBytes("originalData"),Bytes.toBytes(col),Bytes.toBytes(value));
         datas.add(put);
-//        List<Mutation> result=hbaseService.saveOrUpdate(tableName,datas);
-//        if(result.size()<1){
-//            logger.error("hbase写入失败");
-//        }
+        List<Mutation> result=hbaseService.saveOrUpdate(tableName,datas);
+        logger.info(result.toString());
+        if(result.size()<1){
+            logger.error("hbase写入失败");
+        }
     }
 
 
@@ -84,7 +85,7 @@ public class SensorHandler {
         String topic=kafkaPrefix+stationCode;
         Sensor sensor=CatcheData.getSensorBySensorCode(channelId,sensorCode);
         String msg=time+":"+sensor.getCode()+":"+getValue(channelId,message);
-        logger.info("topic:"+topic+"-------msg:"+msg);
+        logger.info("kafkatopic:["+topic+"] msg:["+msg+"]");
         kafkaTemplate.send(topic,msg);
     }
 

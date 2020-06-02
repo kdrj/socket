@@ -77,7 +77,6 @@ public class TcpClient extends AbstractTcpClient {
                 logger.warn("服务端要求关闭客户");
                 ctx.close();
             } else if(message.substring(2).startsWith(readCommand)) {
-                logger.info("开始读了");
                 String sensorCode = message.substring(0, 2);
                 Iterator<Double> iterator = simulatorIteratorMap.get(sensorCode);
                 if (!iterator.hasNext()) {

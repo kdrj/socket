@@ -46,7 +46,6 @@ public class CatcheData {
 
     public static boolean containsStationCode(String stationCode) {
         for (Station station:stations) {
-            System.out.println(station.toString());
             if (stationCode.equals(station.getCode())){
                 return true;
             }

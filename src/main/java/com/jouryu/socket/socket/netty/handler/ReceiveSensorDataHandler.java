@@ -47,6 +47,7 @@ public class ReceiveSensorDataHandler extends SimpleChannelInboundHandler<byte[]
             logger.info("传感器"+getRemoteAddress(channel)+"发来注册信息");
             registerHandler(channel,message);
         } else if (message.length()>=14){
+            logger.info("==============="+message);
             sensorHandler.process(channelHandlerContext,message);
 //            String stationCode=Utils.getKeyByValue(CatcheData.stationCodeToChannelMap,getChannelId(channel));
 //            sensorHandler.process(channelHandlerContext,message);
